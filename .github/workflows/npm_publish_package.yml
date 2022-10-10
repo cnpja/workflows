@@ -10,7 +10,7 @@ env:
 jobs:
   quality:
     name: Quality Control
-    uses: ./nodejs_quality_control.yml
+    uses: ./.github/workflows/nodejs_quality_control.yml
     secrets: inherit
 
   publish:
