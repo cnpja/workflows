@@ -4,9 +4,8 @@ on:
   workflow_call:
 
 env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
 
 jobs:
   quality:
