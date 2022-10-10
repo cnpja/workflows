@@ -3,6 +3,9 @@ name: Node.js Quality Control
 on:
   workflow_call:
 
+env:
+  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
+
 jobs:
   test:
     name: Unit Test
