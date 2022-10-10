@@ -3,10 +3,6 @@ name: NPM Publish Package
 on:
   workflow_call:
 
-env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
 jobs:
   quality:
     name: Quality Control
