@@ -4,13 +4,13 @@ on:
   workflow_call:
     inputs:
       ref:
-        description: 'Reference of shared workflows'
+        description: 'Reference to shared workflows'
         required: true
         type: string
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   quality:

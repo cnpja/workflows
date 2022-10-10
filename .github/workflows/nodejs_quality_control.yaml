@@ -2,9 +2,14 @@ name: Node.js Quality Control
 
 on:
   workflow_call:
+    inputs:
+      ref:
+        description: 'Reference to shared workflows'
+        required: true
+        type: string
 
 env:
-  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
+  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
 jobs:
   test:
@@ -12,6 +17,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Workflows
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.ref }}
+          repository: cnpja/workflows
+          path: workflows
+          token: ${{ secrets.GITHUB_ACCESS_TOKEN }}
+
       - name: Checkout Code
         uses: actions/checkout@v3
 
