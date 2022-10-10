@@ -17,6 +17,8 @@ jobs:
     name: Quality Control
     uses: ./.github/workflows/nodejs_quality_control.yaml
     secrets: inherit
+    with:
+      ref: ${{ inputs.ref }}
 
   publish:
     name: NPM Publish
