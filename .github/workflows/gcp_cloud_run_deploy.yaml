@@ -3,9 +3,6 @@ name: GCP Cloud Run Deploy
 on:
   workflow_call:
 
-env:
-  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
-
 jobs:
   quality:
     name: Quality Control
@@ -53,8 +50,8 @@ jobs:
         gcloud components install beta
 
     - name: Build Container Image
-      run: docker build . -t $CLOUD_RUN_IMAGE
-          
+      run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
+
     - name: Publish Image to Container Registry
       run: docker push $CLOUD_RUN_IMAGE
 
