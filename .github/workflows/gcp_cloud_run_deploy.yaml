@@ -3,21 +3,24 @@ name: GCP Cloud Run Deploy
 on:
   workflow_call:
     inputs:
+      execution-environment:
+        type: string
+        default: gen2
       cpu:
-        required: true
         type: number
+        default: 1
       memory:
-        required: true
         type: number
-      concurrency:
-        required: true
-        type: number
+        default: 512
       max-instances:
-        required: true
         type: number
+        default: 10
+      concurrency:
+        type: number
+        default: 100
       timeout:
-        required: true
         type: number
+        default: 150
 
 jobs:
   quality:
@@ -76,13 +79,13 @@ jobs:
         gcloud beta run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
           --region us-east1 \
           --allow-unauthenticated \
-          --execution-environment gen2 \
           --project $GCP_PROJECT \
           --image $CLOUD_RUN_IMAGE \
           --vpc-connector $GCP_PREFIX-vpc-cloud-run \
+          --execution-environment ${{ inputs.execution-environment }} \
           --cpu ${{ inputs.cpu }} \
           --memory ${{ inputs.memory }} \
-          --concurrency ${{ inputs.concurrency }} \
           --max-instances ${{ inputs.max-instances }} \
+          --concurrency ${{ inputs.concurrency }} \
           --timeout ${{ inputs.timeout }} \
           --set-env-vars="NODE_ENV=staging" \
