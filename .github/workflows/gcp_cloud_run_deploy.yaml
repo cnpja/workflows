@@ -1,0 +1,75 @@
+name: GCP Cloud Run Deploy
+
+on:
+  workflow_call:
+
+env:
+  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
+
+jobs:
+  quality:
+    name: Quality Control
+    uses: ./.github/workflows/nodejs_quality_control.yaml
+    secrets: inherit
+
+  deploy:
+    name: Cloud Run Deploy
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Configure Environment
+      if: endsWith(github.ref, '/stage')
+      run: |
+        echo "GCP_PREFIX=stg" >> $GITHUB_ENV
+        echo "GCP_PROJECT=${{ secrets.STG_GCP_PROJECT }}" >> $GITHUB_ENV
+        echo "CLOUD_RUN_IMAGE=gcr.io/$GCP_PROJECT/stg-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
+
+    - name: Configure Environment
+      if: endsWith(github.ref, '/master')
+      run: |
+        echo "GCP_PREFIX=prd" >> $GITHUB_ENV
+        echo "GCP_PROJECT=${{ secrets.PRD_GCP_PROJECT }}" >> $GITHUB_ENV
+        echo "CLOUD_RUN_IMAGE=gcr.io/$GCP_PROJECT/prd-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
+
+    - name: Authenticate Google Cloud Platform
+      if: endsWith(github.ref, '/stage')
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        service_account_key: ${{ secrets.STG_GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Authenticate Google Cloud Platform
+      if: endsWith(github.ref, '/master')
+      uses: google-github-actions/setup-gcloud@v0
+      with:
+        service_account_key: ${{ secrets.PRD_GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Configure Google Cloud CLI
+      run: |
+        gcloud auth configure-docker
+        gcloud components install beta
+
+    - name: Build Container Image
+      run: docker build . -t $CLOUD_RUN_IMAGE
+          
+    - name: Publish Image to Container Registry
+      run: docker push $CLOUD_RUN_IMAGE
+
+    - name: Deploy Image on Cloud Run
+      run: |
+        gcloud beta run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
+          --region us-east1 \
+          --allow-unauthenticated \
+          --execution-environment gen2 \
+          --project $GCP_PROJECT \
+          --image $CLOUD_RUN_IMAGE \
+          --vpc-connector $GCP_PREFIX-vpc-cloud-run \
+          --cpu 1 \
+          --memory 1Gi \
+          --concurrency 250 \
+          --max-instances 10 \
+          --timeout 150s \
+          --set-env-vars="NODE_ENV=staging" \
