@@ -2,6 +2,22 @@ name: GCP Cloud Run Deploy
 
 on:
   workflow_call:
+    inputs:
+      cpu:
+        required: true
+        type: number
+      memory:
+        required: true
+        type: number
+      concurrency:
+        required: true
+        type: number
+      max-instances:
+        required: true
+        type: number
+      timeout:
+        required: true
+        type: number
 
 jobs:
   quality:
@@ -64,9 +80,9 @@ jobs:
           --project $GCP_PROJECT \
           --image $CLOUD_RUN_IMAGE \
           --vpc-connector $GCP_PREFIX-vpc-cloud-run \
-          --cpu 1 \
-          --memory 1Gi \
-          --concurrency 250 \
-          --max-instances 10 \
-          --timeout 150s \
+          --cpu ${{ inputs.cpu }} \
+          --memory ${{ inputs.memory }} \
+          --concurrency ${{ inputs.concurrency }} \
+          --max-instances ${{ inputs.max-instances }} \
+          --timeout ${{ inputs.timeout }} \
           --set-env-vars="NODE_ENV=staging" \
