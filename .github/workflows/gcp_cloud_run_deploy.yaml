@@ -26,14 +26,14 @@ jobs:
       run: |
         echo "GCP_PREFIX=stg" >> $GITHUB_ENV
         echo "GCP_PROJECT=${{ secrets.STG_GCP_PROJECT }}" >> $GITHUB_ENV
-        echo "CLOUD_RUN_IMAGE=gcr.io/$GCP_PROJECT/stg-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
+        echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.STG_GCP_PROJECT }}/stg-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
 
     - name: Configure Environment
       if: endsWith(github.ref, '/master')
       run: |
         echo "GCP_PREFIX=prd" >> $GITHUB_ENV
         echo "GCP_PROJECT=${{ secrets.PRD_GCP_PROJECT }}" >> $GITHUB_ENV
-        echo "CLOUD_RUN_IMAGE=gcr.io/$GCP_PROJECT/prd-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
+        echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.PRD_GCP_PROJECT }}/prd-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
 
     - name: Authenticate Google Cloud Platform
       if: endsWith(github.ref, '/stage')
