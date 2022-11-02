@@ -10,8 +10,8 @@ on:
         type: number
         default: 1
       memory:
-        type: number
-        default: 512
+        type: string
+        default: 512Mi
       max-instances:
         type: number
         default: 10
