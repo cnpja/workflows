@@ -3,6 +3,9 @@ name: GCP Cloud Run Deploy
 on:
   workflow_call:
     inputs:
+      ingress:
+        type: string
+        default: internal-and-cloud-load-balancing
       execution-environment:
         type: string
         default: gen2
@@ -21,6 +24,9 @@ on:
       timeout:
         type: number
         default: 150
+      args:
+        type: string
+        required: false
 
 jobs:
   quality:
@@ -43,6 +49,7 @@ jobs:
         echo "GCP_PREFIX=stg" >> $GITHUB_ENV
         echo "GCP_PROJECT=${{ secrets.STG_GCP_PROJECT }}" >> $GITHUB_ENV
         echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.STG_GCP_PROJECT }}/stg-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
+        echo "NODE_ENV=staging" >> $GITHUB_ENV
 
     - name: Configure Environment
       if: endsWith(github.ref, '/master')
@@ -50,6 +57,7 @@ jobs:
         echo "GCP_PREFIX=prd" >> $GITHUB_ENV
         echo "GCP_PROJECT=${{ secrets.PRD_GCP_PROJECT }}" >> $GITHUB_ENV
         echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.PRD_GCP_PROJECT }}/prd-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
+        echo "NODE_ENV=production" >> $GITHUB_ENV
 
     - name: Authenticate Google Cloud Platform
       if: endsWith(github.ref, '/stage')
@@ -82,10 +90,12 @@ jobs:
           --project $GCP_PROJECT \
           --image $CLOUD_RUN_IMAGE \
           --vpc-connector $GCP_PREFIX-vpc-cloud-run \
+          --ingress ${{ inputs.ingress }} \
           --execution-environment ${{ inputs.execution-environment }} \
           --cpu ${{ inputs.cpu }} \
           --memory ${{ inputs.memory }} \
           --max-instances ${{ inputs.max-instances }} \
           --concurrency ${{ inputs.concurrency }} \
           --timeout ${{ inputs.timeout }} \
-          --set-env-vars="NODE_ENV=staging" \
+          --set-env-vars="NODE_ENV=$NODE_ENV" \
+          ${{ inputs.args }}
