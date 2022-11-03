@@ -26,9 +26,10 @@ on:
         default: 150
       deploy-args:
         type: string
+    secrets:
       npm-token:
         type: string
-        default: "${{ secrets.GLB_NPM_TOKEN }}"
+        default: ${{ secrets.GLB_NPM_TOKEN }}
 
 jobs:
   # quality:
