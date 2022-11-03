@@ -44,16 +44,8 @@ jobs:
     steps:
     - name: Configure Environment
       id: config
-      if: endsWith(github.ref, '/stage')
       run: |
-        echo ::set-output name=NODE_ENV::staging
-        echo ::set-output name=NPM_TOKEN::${{ secrets.GLB_NPM_TOKEN }}
-
-    - name: Configure Environment
-      id: config
-      if: endsWith(github.ref, '/master')
-      run: |
-        echo ::set-output name=NODE_ENV::production
+        echo ::set-output name=NODE_ENV::${{ fromJSON('{"master":"production","stage":"staging"}')[github.ref_name] }}
         echo ::set-output name=NPM_TOKEN::${{ secrets.GLB_NPM_TOKEN }}
 
   deploy:
