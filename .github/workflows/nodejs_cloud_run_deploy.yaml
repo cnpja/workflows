@@ -5,28 +5,20 @@ on:
     inputs:
       ingress:
         type: string
-        default: internal-and-cloud-load-balancing
       execution-environment:
         type: string
-        default: gen2
       cpu:
         type: number
-        default: 1
       memory:
         type: string
-        default: 512Mi
       max-instances:
         type: number
-        default: 10
       concurrency:
         type: number
-        default: 100
       timeout:
         type: number
-        default: 150
       args:
         type: string
-        required: false
 
 jobs:
   quality:
@@ -45,57 +37,22 @@ jobs:
 
     - name: Configure Environment
       if: endsWith(github.ref, '/stage')
-      run: |
-        echo "GCP_PREFIX=stg" >> $GITHUB_ENV
-        echo "GCP_PROJECT=${{ secrets.STG_GCP_PROJECT }}" >> $GITHUB_ENV
-        echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.STG_GCP_PROJECT }}/stg-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
-        echo "NODE_ENV=staging" >> $GITHUB_ENV
+      run: echo "NODE_ENV=staging" >> $GITHUB_ENV
 
     - name: Configure Environment
       if: endsWith(github.ref, '/master')
-      run: |
-        echo "GCP_PREFIX=prd" >> $GITHUB_ENV
-        echo "GCP_PROJECT=${{ secrets.PRD_GCP_PROJECT }}" >> $GITHUB_ENV
-        echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.PRD_GCP_PROJECT }}/prd-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
-        echo "NODE_ENV=production" >> $GITHUB_ENV
+      run: echo "NODE_ENV=production" >> $GITHUB_ENV
 
-    - name: Authenticate Google Cloud Platform
-      if: endsWith(github.ref, '/stage')
-      uses: google-github-actions/setup-gcloud@v0
+    - name: Deploy on Cloud Run
+      uses: ./.github/workflows/gpc_cloud_run_deploy.yaml
+      secrets: inherit
       with:
-        service_account_key: ${{ secrets.STG_GCP_SERVICE_ACCOUNT_KEY }}
-
-    - name: Authenticate Google Cloud Platform
-      if: endsWith(github.ref, '/master')
-      uses: google-github-actions/setup-gcloud@v0
-      with:
-        service_account_key: ${{ secrets.PRD_GCP_SERVICE_ACCOUNT_KEY }}
-
-    - name: Configure Google Cloud CLI
-      run: |
-        gcloud auth configure-docker
-        gcloud components install beta
-
-    - name: Build Container Image
-      run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
-
-    - name: Publish Image to Container Registry
-      run: docker push $CLOUD_RUN_IMAGE
-
-    - name: Deploy Image on Cloud Run
-      run: |
-        gcloud beta run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
-          --region us-east1 \
-          --allow-unauthenticated \
-          --project $GCP_PROJECT \
-          --image $CLOUD_RUN_IMAGE \
-          --vpc-connector $GCP_PREFIX-vpc-cloud-run \
-          --ingress ${{ inputs.ingress }} \
-          --execution-environment ${{ inputs.execution-environment }} \
-          --cpu ${{ inputs.cpu }} \
-          --memory ${{ inputs.memory }} \
-          --max-instances ${{ inputs.max-instances }} \
-          --concurrency ${{ inputs.concurrency }} \
-          --timeout ${{ inputs.timeout }} \
+        ingress: ${{ inputs.ingress }}
+        execution-environment: ${{ inputs.execution-environment }}
+        cpu: ${{ inputs.cpu }}
+        max-instances: ${{ inputs.max-instances }}
+        concurrency: ${{ inputs.concurrency }}
+        timeout: ${{ inputs.timeout }}
+        args: |
           --set-env-vars="NODE_ENV=$NODE_ENV" \
           ${{ inputs.args }}
