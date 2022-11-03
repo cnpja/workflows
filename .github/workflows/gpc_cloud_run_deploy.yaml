@@ -24,10 +24,11 @@ on:
       timeout:
         type: number
         default: 150
+    secrets:
       build-args:
-        type: string
+        required: false
       deploy-args:
-        type: string
+        required: false
 
 jobs:
   deploy:
@@ -70,7 +71,7 @@ jobs:
         gcloud components install beta
 
     - name: Build Container Image
-      run: docker build . -t $CLOUD_RUN_IMAGE ${{ inputs.build-args }}
+      run: docker build . -t $CLOUD_RUN_IMAGE ${{ secrets.build-args }}
 
     - name: Publish Image to Container Registry
       run: docker push $CLOUD_RUN_IMAGE
@@ -90,4 +91,4 @@ jobs:
           --max-instances ${{ inputs.max-instances }} \
           --concurrency ${{ inputs.concurrency }} \
           --timeout ${{ inputs.timeout }} \
-          ${{ inputs.deploy-args }}
+          ${{ secrets.deploy-args }}

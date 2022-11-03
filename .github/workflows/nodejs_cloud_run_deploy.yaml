@@ -26,10 +26,6 @@ on:
         default: 150
       deploy-args:
         type: string
-    secrets:
-      npm-token:
-        type: string
-        default: ${{ secrets.GLB_NPM_TOKEN }}
 
 jobs:
   # quality:
@@ -64,8 +60,9 @@ jobs:
       max-instances: ${{ inputs.max-instances }}
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
+    secrets:
       build-args: |
-        --build-arg NPM_TOKEN=${{ secrets.npm-token }}
+        --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
       deploy-args: |
         --set-env-vars="NODE_ENV=${{ fromJSON('{"master":"production","stage":"staging"}')[github.ref_name] }}" \
         ${{ inputs.deploy-args }}
