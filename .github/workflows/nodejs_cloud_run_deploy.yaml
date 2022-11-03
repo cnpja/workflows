@@ -41,11 +41,15 @@ jobs:
     steps:
     - name: Configure Environment
       if: endsWith(github.ref, '/stage')
-      run: echo "NODE_ENV=staging" >> $GITHUB_ENV
+      run: |
+        echo "NODE_ENV=staging" >> $GITHUB_ENV
+        echo "NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}" >> $GITHUB_ENV
 
     - name: Configure Environment
       if: endsWith(github.ref, '/master')
-      run: echo "NODE_ENV=production" >> $GITHUB_ENV
+      run: |
+        echo "NODE_ENV=production" >> $GITHUB_ENV
+        echo "NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}" >> $GITHUB_ENV
 
   deploy:
     name: Cloud Run Deploy
@@ -61,7 +65,7 @@ jobs:
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
       build-args: |
-        --build-arg "NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}"
+        --build-arg "NPM_TOKEN=$NPM_TOKEN"
       deploy-args: |
         --set-env-vars="NODE_ENV=$NODE_ENV" \
         ${{ inputs.deploy-args }}
