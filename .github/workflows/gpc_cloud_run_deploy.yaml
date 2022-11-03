@@ -24,7 +24,9 @@ on:
       timeout:
         type: number
         default: 150
-      args:
+      build-args:
+        type: string
+      deploy-args:
         type: string
 
 jobs:
@@ -68,7 +70,7 @@ jobs:
         gcloud components install beta
 
     - name: Build Container Image
-      run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
+      run: docker build . -t $CLOUD_RUN_IMAGE ${{ inputs.deploy-args }}
 
     - name: Publish Image to Container Registry
       run: docker push $CLOUD_RUN_IMAGE
@@ -88,4 +90,4 @@ jobs:
           --max-instances ${{ inputs.max-instances }} \
           --concurrency ${{ inputs.concurrency }} \
           --timeout ${{ inputs.timeout }} \
-          ${{ inputs.args }}
+          ${{ inputs.deploy-args }}
