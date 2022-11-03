@@ -29,6 +29,7 @@ jobs:
   deploy:
     name: Cloud Run Deploy
     runs-on: ubuntu-latest
+    secrets: inherit
     needs: quality
 
     steps:
@@ -45,7 +46,6 @@ jobs:
 
     - name: Deploy on Cloud Run
       uses: ./.github/workflows/gpc_cloud_run_deploy.yaml
-      secrets: inherit
       with:
         ingress: ${{ inputs.ingress }}
         execution-environment: ${{ inputs.execution-environment }}
