@@ -36,7 +36,6 @@ jobs:
   configuration:
     name: Environment Configuration
     runs-on: ubuntu-latest
-    secrets: inherit
     # needs: quality
     outputs:
       NPM_TOKEN: ${{ steps.config.outputs.NPM_TOKEN }}
