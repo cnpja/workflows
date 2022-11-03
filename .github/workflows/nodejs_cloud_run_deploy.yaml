@@ -29,7 +29,6 @@ jobs:
   deploy:
     name: Cloud Run Deploy
     runs-on: ubuntu-latest
-    secrets: inherit
     needs: quality
 
     steps:
