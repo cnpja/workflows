@@ -28,7 +28,7 @@ on:
         type: string
       npm-token:
         type: string
-        default: "${{ secrets.GLB_NPM_TOKEN }}""
+        default: "${{ secrets.GLB_NPM_TOKEN }}"
 
 jobs:
   # quality:
