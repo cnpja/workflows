@@ -27,33 +27,34 @@ on:
       deploy-args:
         type: string
 
+env:
+  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
+
 jobs:
   quality:
     name: Quality Control
     uses: ./.github/workflows/nodejs_quality_control.yaml
     secrets: inherit
 
-  configuration:
-    name: Environment Configuration
-    runs-on: ubuntu-latest
-    secrets: inherit
-    needs: quality
-    outputs:
-      NODE_ENV: ${{ steps.config.outputs.NODE_ENV }}
-      NPM_TOKEN: ${{ steps.config.outputs.NPM_TOKEN }}
+  # configuration:
+  #   name: Environment Configuration
+  #   runs-on: ubuntu-latest
+  #   secrets: inherit
+  #   needs: quality
+  #   outputs:
+  #     NODE_ENV: ${{ steps.config.outputs.NODE_ENV }}
 
-    steps:
-    - name: Configure Environment
-      id: config
-      run: |
-        echo ::set-output name=NODE_ENV::${{ fromJSON('{"master":"production","stage":"staging"}')[github.ref_name] }}
-        echo ::set-output name=NPM_TOKEN::${{ secrets.GLB_NPM_TOKEN }}
+  #   steps:
+  #   - name: Configure Environment
+  #     id: config
+  #     run: |
+  #       echo ::set-output name=NODE_ENV::${{ fromJSON('{"master":"production","stage":"staging"}')[github.ref_name] }}
 
   deploy:
     name: Cloud Run Deploy
     uses: ./.github/workflows/gpc_cloud_run_deploy.yaml
     secrets: inherit
-    needs: configuration
+    # needs: configuration
 
     with:
       ingress: ${{ inputs.ingress }}
@@ -63,7 +64,7 @@ jobs:
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
       build-args: |
-        --build-arg NPM_TOKEN=${{ needs.configuration.outputs.NPM_TOKEN }}
+        --build-arg NPM_TOKEN=${{ env.NPM_TOKEN }}
       deploy-args: |
-        --set-env-vars="NODE_ENV=${{ needs.configuration.outputs.NODE_ENV }}" \
+        --set-env-vars="NODE_ENV=${{ fromJSON('{"master":"production","stage":"staging"}')[github.ref_name] }}" \
         ${{ inputs.deploy-args }}
