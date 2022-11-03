@@ -36,6 +36,7 @@ jobs:
   configuration:
     name: Environment Configuration
     runs-on: ubuntu-latest
+    secrets: inherit
     needs: quality
     outputs:
       NODE_ENV: ${{ steps.config.outputs.NODE_ENV }}
