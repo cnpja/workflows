@@ -70,7 +70,7 @@ jobs:
         gcloud components install beta
 
     - name: Build Container Image
-      run: docker build . -t $CLOUD_RUN_IMAGE ${{ inputs.deploy-args }}
+      run: docker build . -t $CLOUD_RUN_IMAGE ${{ inputs.build-args }}
 
     - name: Publish Image to Container Registry
       run: docker push $CLOUD_RUN_IMAGE
