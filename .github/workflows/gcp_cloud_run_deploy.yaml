@@ -9,6 +9,9 @@ on:
       execution-environment:
         type: string
         default: gen2
+      port:
+        type: number
+        default: 8080
       cpu:
         type: number
         default: 1
@@ -83,6 +86,7 @@ jobs:
           --vpc-connector $GCP_PREFIX-vpc-cloud-run \
           --ingress ${{ inputs.ingress }} \
           --execution-environment ${{ inputs.execution-environment }} \
+          --port ${{ inputs.port }} \
           --cpu ${{ inputs.cpu }} \
           --memory ${{ inputs.memory }} \
           --max-instances ${{ inputs.max-instances }} \
