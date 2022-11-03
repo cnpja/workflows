@@ -65,7 +65,7 @@ jobs:
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
       build-args: |
-        --build-arg NPM_TOKEN=${{ inputs.npm-token }}
+        --build-arg NPM_TOKEN=${{ secrets.npm-token }}
       deploy-args: |
         --set-env-vars="NODE_ENV=${{ fromJSON('{"master":"production","stage":"staging"}')[github.ref_name] }}" \
         ${{ inputs.deploy-args }}
