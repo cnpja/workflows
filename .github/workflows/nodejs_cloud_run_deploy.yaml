@@ -35,7 +35,7 @@ jobs:
 
   deploy:
     name: Cloud Run Deploy
-    uses: ./.github/workflows/gpc_cloud_run_deploy.yaml
+    uses: ./.github/workflows/gcp_cloud_run_deploy.yaml
     secrets: inherit
     needs: quality
 
