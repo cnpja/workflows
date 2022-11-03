@@ -27,14 +27,11 @@ on:
       deploy-args:
         type: string
 
-env:
-  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
-
 jobs:
-  quality:
-    name: Quality Control
-    uses: ./.github/workflows/nodejs_quality_control.yaml
-    secrets: inherit
+  # quality:
+  #   name: Quality Control
+  #   uses: ./.github/workflows/nodejs_quality_control.yaml
+  #   secrets: inherit
 
   # configuration:
   #   name: Environment Configuration
@@ -54,6 +51,8 @@ jobs:
     name: Cloud Run Deploy
     uses: ./.github/workflows/gpc_cloud_run_deploy.yaml
     secrets: inherit
+    env:
+      NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
     # needs: configuration
 
     with:
