@@ -37,19 +37,24 @@ jobs:
     name: Environment Configuration
     runs-on: ubuntu-latest
     needs: quality
+    outputs:
+      NODE_ENV: ${{ steps.config.outputs.NODE_ENV }}
+      NPM_TOKEN: ${{ steps.config.outputs.NPM_TOKEN }}
 
     steps:
     - name: Configure Environment
+      id: config
       if: endsWith(github.ref, '/stage')
       run: |
-        echo "NODE_ENV=staging" >> $GITHUB_ENV
-        echo "NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}" >> $GITHUB_ENV
+        echo ::set-output name=NODE_ENV::staging
+        echo ::set-output name=NPM_TOKEN::${{ secrets.GLB_NPM_TOKEN }}
 
     - name: Configure Environment
+      id: config
       if: endsWith(github.ref, '/master')
       run: |
-        echo "NODE_ENV=production" >> $GITHUB_ENV
-        echo "NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}" >> $GITHUB_ENV
+        echo ::set-output name=NODE_ENV::production
+        echo ::set-output name=NPM_TOKEN::${{ secrets.GLB_NPM_TOKEN }}
 
   deploy:
     name: Cloud Run Deploy
@@ -65,7 +70,7 @@ jobs:
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
       build-args: |
-        --build-arg NPM_TOKEN=${{ env.NPM_TOKEN }}
+        --build-arg NPM_TOKEN=${{ needs.configuration.outputs.NPM_TOKEN }}
       deploy-args: |
-        --set-env-vars="NODE_ENV=${{ env.NODE_ENV }}" \
+        --set-env-vars="NODE_ENV=${{ needs.configuration.outputs.NODE_ENV }}" \
         ${{ inputs.deploy-args }}
