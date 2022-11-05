@@ -5,7 +5,7 @@ on:
     inputs:
       ingress:
         type: string
-        default: internal-and-cloud-load-balancing
+        default: all
       execution-environment:
         type: string
         default: gen2
