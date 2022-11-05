@@ -33,7 +33,7 @@ on:
 env:
   GCP_PREFIX: ${{ fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name] }}
   GCP_PROJECT: ${{ secrets[format('{0}_GCP_PROJECT', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])] }}
-  CLOUD_RUN_IMAGE: ${{ format('gcr.io/{0}/{1}-{2}:{3}', secrets[format('{0}_GCP_PROJECT', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])], fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], ${{ github.event.repository.name }}, ${{ github.sha }}) }}
+  CLOUD_RUN_IMAGE: ${{ format('gcr.io/{0}/{1}-{2}:{3}', secrets[format('{0}_GCP_PROJECT', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])], fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], github.event.repository.name, github.sha) }}
 
 jobs:
   deploy:
