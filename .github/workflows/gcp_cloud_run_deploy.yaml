@@ -30,6 +30,11 @@ on:
       deploy-args:
         type: string
 
+env:
+  GCP_PREFIX: ${{ fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name] }}
+  GCP_PROJECT: ${{ secrets[format('{0}_GCP_PROJECT', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])] }}
+  CLOUD_RUN_IMAGE: ${{ format('gcr.io/{0}/{1}-{2}:{3}', secrets[format('{0}_GCP_PROJECT', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])], fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], ${{ github.event.repository.name }}, ${{ github.sha }}) }}
+
 jobs:
   deploy:
     name: Cloud Run Deploy
@@ -39,31 +44,10 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Configure Environment
-      if: endsWith(github.ref, '/stage')
-      run: |
-        echo "GCP_PREFIX=stg" >> $GITHUB_ENV
-        echo "GCP_PROJECT=${{ secrets.STG_GCP_PROJECT }}" >> $GITHUB_ENV
-        echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.STG_GCP_PROJECT }}/stg-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
-
-    - name: Configure Environment
-      if: endsWith(github.ref, '/master')
-      run: |
-        echo "GCP_PREFIX=prd" >> $GITHUB_ENV
-        echo "GCP_PROJECT=${{ secrets.PRD_GCP_PROJECT }}" >> $GITHUB_ENV
-        echo "CLOUD_RUN_IMAGE=gcr.io/${{ secrets.PRD_GCP_PROJECT }}/prd-${{ github.event.repository.name }}:${{ github.sha }}" >> $GITHUB_ENV
-
     - name: Authenticate Google Cloud Platform
-      if: endsWith(github.ref, '/stage')
-      uses: google-github-actions/setup-gcloud@v0
+      uses: 'google-github-actions/auth@v0'
       with:
-        service_account_key: ${{ secrets.STG_GCP_SERVICE_ACCOUNT_KEY }}
-
-    - name: Authenticate Google Cloud Platform
-      if: endsWith(github.ref, '/master')
-      uses: google-github-actions/setup-gcloud@v0
-      with:
-        service_account_key: ${{ secrets.PRD_GCP_SERVICE_ACCOUNT_KEY }}
+        credentials_json: ${{ secrets[format('{0}_GCP_SERVICE_ACCOUNT_KEY', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])] }}
 
     - name: Configure Google Cloud CLI
       run: |
