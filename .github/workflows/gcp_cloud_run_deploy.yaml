@@ -56,10 +56,17 @@ jobs:
     - name: Configure Google Cloud CLI
       run: gcloud auth configure-docker
 
-    - name: Download Artifacts
-      uses: actions/download-artifact@v3
+    - name: Check Build Artifacts
+      id: check-artifacts
+      uses: xSAVIKx/artifact-exists-action@v0
       with:
-        name: artifacts
+        name: build-artifacts
+
+    - name: Download Build Artifacts
+      uses: actions/download-artifact@v3
+      if: steps.check-artifacts.outputs.exists
+      with:
+        name: build-artifacts
 
     - name: Build Container Image
       run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
