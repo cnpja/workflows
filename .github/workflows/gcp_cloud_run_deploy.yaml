@@ -56,15 +56,9 @@ jobs:
     - name: Configure Google Cloud CLI
       run: gcloud auth configure-docker
 
-    - name: Check Build Artifacts
-      id: check-artifacts
-      uses: xSAVIKx/artifact-exists-action@v0
-      with:
-        name: build-artifacts
-
     - name: Download Build Artifacts
       uses: actions/download-artifact@v3
-      if: steps.check-artifacts.outputs.exists
+      continue-on-error: true
       with:
         name: build-artifacts
 
