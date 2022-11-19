@@ -15,11 +15,11 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Download Build Artifacts
+      - name: Download Environment File
         uses: actions/download-artifact@v3
         continue-on-error: true
         with:
-          name: build-artifacts
+          name: environment-file
 
       - name: Install Dependencies
         run: |

@@ -31,11 +31,28 @@ jobs:
     uses: ./.github/workflows/nodejs_quality_control.yaml
     secrets: inherit
 
+  config:
+    name: Configure Artifacts
+    runs-on: ubuntu-latest
+    needs: quality
+
+    steps:
+    - name: Download Environment File
+      uses: actions/download-artifact@v3
+      with:
+        name: environment-file
+
+    - name: Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: .env
+
   deploy:
     name: Cloud Run Deploy
     uses: ./.github/workflows/gcp_cloud_run_deploy.yaml
     secrets: inherit
-    needs: quality
+    needs: config
 
     with:
       ingress: ${{ inputs.ingress }}
