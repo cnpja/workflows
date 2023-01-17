@@ -42,6 +42,9 @@ jobs:
       with:
         name: environment-file
 
+    - name: Convert Environment File to YAML
+      run: sed -i -E 's/(=).+[^=]/:\1/g' .env
+
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
       with:
@@ -61,3 +64,4 @@ jobs:
       max-instances: ${{ inputs.max-instances }}
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
+      deploy-args: '--env-vars-file .env'
