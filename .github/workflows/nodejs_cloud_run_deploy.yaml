@@ -43,7 +43,7 @@ jobs:
         name: environment-file
 
     - name: Convert Environment File to YAML
-      run: sed -i -E 's/(=).+[^=]/:\1/g' .env
+      run: sed -i -E 's/=(.+[^=])/:\1/g' .env
 
     - name: Upload Build Artifacts
       uses: actions/upload-artifact@v3
