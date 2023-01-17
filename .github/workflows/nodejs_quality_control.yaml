@@ -23,7 +23,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm i -g pnpm
+          npm i -g pnpm@7.25.0
           pnpm i --frozen-lockfile --ignore-scripts
 
       - name: Run Unit Test
@@ -47,7 +47,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm i -g pnpm
+          npm i -g pnpm@7.25.0
           pnpm i --frozen-lockfile --ignore-scripts
 
       - name: Run Build Dry Run
@@ -63,7 +63,7 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm i -g pnpm
+          npm i -g pnpm@7.25.0
           pnpm i --frozen-lockfile --ignore-scripts
 
       - name: Run Lint Check
