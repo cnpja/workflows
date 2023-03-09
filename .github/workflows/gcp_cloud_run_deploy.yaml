@@ -63,7 +63,10 @@ jobs:
         name: build-artifacts
 
     - name: Build Container Image
-      run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
+      run: docker build . -t $CLOUD_RUN_IMAGE \
+        --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }} \
+        --build-arg PREFECT_API_URL=${{ secrets.GLB_PREFECT_API_URL }} \
+        --build-arg PREFECT_API_KEY=${{ secrets.GLB_PREFECT_API_KEY }} \
 
     - name: Publish Image to Container Registry
       run: docker push $CLOUD_RUN_IMAGE
