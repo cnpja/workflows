@@ -21,6 +21,9 @@ on:
       max-instances:
         type: number
         default: 10
+      min-instances:
+        type: number
+        default: 0
       concurrency:
         type: number
         default: 100
@@ -86,6 +89,7 @@ jobs:
           --cpu ${{ inputs.cpu }} \
           --memory ${{ inputs.memory }} \
           --max-instances ${{ inputs.max-instances }} \
+          --min-instances ${{ inputs.min-instances }} \
           --concurrency ${{ inputs.concurrency }} \
           --timeout ${{ inputs.timeout }} \
           ${{ inputs.deploy-args }} \
