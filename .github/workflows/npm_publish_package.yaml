@@ -28,7 +28,7 @@ jobs:
         run: |
           npm i -g pnpm@7.25.0 semantic-release@19.0.5
           npm i -g @semantic-release/changelog@6.0.2 @semantic-release/git@10.0.1
-          pnpm i --frozen-lockfile --ignore-scripts
+          pnpm i --frozen-lockfile
 
       - name: Build Distributable
         run: pnpm build
