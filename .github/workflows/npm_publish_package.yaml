@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_TOKEN: ${{ secrets.GLB_GH_TOKEN }}
   NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
 
 jobs:
