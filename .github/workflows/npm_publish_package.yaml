@@ -26,8 +26,8 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          npm i -g pnpm semantic-release@19.0.5
-          npm i -g @semantic-release/changelog@6.0.2 @semantic-release/git@10.0.1
+          npm i -g pnpm semantic-release
+          npm i -g @semantic-release/changelog @semantic-release/git
           pnpm i --frozen-lockfile
 
       - name: Build Distributable
