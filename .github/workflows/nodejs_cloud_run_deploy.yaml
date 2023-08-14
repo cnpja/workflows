@@ -18,6 +18,9 @@ on:
       max-instances:
         type: number
         default: 10
+      min-instances:
+        type: number
+        default: 0
       concurrency:
         type: number
         default: 100
@@ -59,5 +62,6 @@ jobs:
       execution-environment: ${{ inputs.execution-environment }}
       cpu: ${{ inputs.cpu }}
       max-instances: ${{ inputs.max-instances }}
+      min-instances: ${{ inputs.min-instances }}
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
