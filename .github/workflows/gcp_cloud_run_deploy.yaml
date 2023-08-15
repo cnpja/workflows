@@ -80,7 +80,6 @@ jobs:
           --allow-unauthenticated \
           --project $GCP_PROJECT \
           --image $CLOUD_RUN_IMAGE \
-          --vpc-connector $GCP_PREFIX-vpc-cloud-run \
           --ingress ${{ inputs.ingress }} \
           --execution-environment ${{ inputs.execution-environment }} \
           --port ${{ inputs.port }} \
