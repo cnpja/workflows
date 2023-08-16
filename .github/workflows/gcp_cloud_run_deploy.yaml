@@ -76,7 +76,6 @@ jobs:
     - name: Deploy Image on Cloud Run
       run: |
         gcloud beta run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
-          --region us-east1 \
           --allow-unauthenticated \
           --project $GCP_PROJECT \
           --image $CLOUD_RUN_IMAGE \
