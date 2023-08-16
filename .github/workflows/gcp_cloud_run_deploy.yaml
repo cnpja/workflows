@@ -79,7 +79,6 @@ jobs:
           --project $GCP_PROJECT \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
-          --execution-environment ${{ inputs.execution-environment }} \
           --port ${{ inputs.port }} \
           --cpu ${{ inputs.cpu }} \
           --memory ${{ inputs.memory }} \
