@@ -6,15 +6,12 @@ on:
       ingress:
         type: string
         default: all
-      execution-environment:
-        type: string
-        default: gen2
       cpu:
         type: number
-        default: 1
+        default: 0.1
       memory:
         type: string
-        default: 512Mi
+        default: 256Mi
       max-instances:
         type: number
         default: 10
@@ -26,7 +23,7 @@ on:
         default: 100
       timeout:
         type: number
-        default: 150
+        default: 60
 
 jobs:
   quality:
@@ -59,7 +56,6 @@ jobs:
 
     with:
       ingress: ${{ inputs.ingress }}
-      execution-environment: ${{ inputs.execution-environment }}
       cpu: ${{ inputs.cpu }}
       max-instances: ${{ inputs.max-instances }}
       min-instances: ${{ inputs.min-instances }}
