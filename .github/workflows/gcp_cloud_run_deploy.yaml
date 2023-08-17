@@ -6,9 +6,6 @@ on:
       ingress:
         type: string
         default: all
-      execution-environment:
-        type: string
-        default: gen2
       port:
         type: number
         default: 8080
@@ -17,7 +14,7 @@ on:
         default: 1
       memory:
         type: string
-        default: 512Mi
+        default: 1Gi
       min-instances:
         type: number
         default: 0
@@ -29,7 +26,7 @@ on:
         default: 100
       timeout:
         type: number
-        default: 150
+        default: 60
       deploy-args:
         type: string
 
