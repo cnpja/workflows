@@ -78,8 +78,8 @@ jobs:
         gcloud beta run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
           --project $GCP_PROJECT \
           --platform=gke \
-          --cluster=$GCP_PREFIX-cluster-autopilot \
-          --cluster-location=us-east1 \
+          --cluster=$GCP_PREFIX-cluster \
+          --cluster-location=us-east1-d \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
           --port ${{ inputs.port }} \
