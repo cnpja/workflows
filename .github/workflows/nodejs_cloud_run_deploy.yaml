@@ -12,12 +12,12 @@ on:
       memory:
         type: string
         default: 256Mi
-      max-instances:
-        type: number
-        default: 10
       min-instances:
         type: number
         default: 0
+      max-instances:
+        type: number
+        default: 10
       concurrency:
         type: number
         default: 100
@@ -57,6 +57,7 @@ jobs:
     with:
       ingress: ${{ inputs.ingress }}
       cpu: ${{ inputs.cpu }}
+      memory: ${{ inputs.memory }}
       max-instances: ${{ inputs.max-instances }}
       min-instances: ${{ inputs.min-instances }}
       concurrency: ${{ inputs.concurrency }}
