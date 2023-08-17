@@ -18,12 +18,12 @@ on:
       memory:
         type: string
         default: 512Mi
-      max-instances:
-        type: number
-        default: 10
       min-instances:
         type: number
         default: 0
+      max-instances:
+        type: number
+        default: 10
       concurrency:
         type: number
         default: 100
