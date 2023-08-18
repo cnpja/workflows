@@ -74,9 +74,8 @@ jobs:
       run: |
         gcloud beta run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
           --project $GCP_PROJECT \
-          --platform=gke \
-          --cluster=$GCP_PREFIX-gke \
-          --cluster-location=us-east1-d \
+          --region us-east1 \
+          --allow-unauthenticated \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
           --port ${{ inputs.port }} \
