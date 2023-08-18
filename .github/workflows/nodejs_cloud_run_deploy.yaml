@@ -24,6 +24,8 @@ on:
       timeout:
         type: number
         default: 60
+      deploy-args:
+        type: string
 
 jobs:
   quality:
@@ -62,3 +64,4 @@ jobs:
       min-instances: ${{ inputs.min-instances }}
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
+      deploy-args: ${{ inputs.deploy-args }}
