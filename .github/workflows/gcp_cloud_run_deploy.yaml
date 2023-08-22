@@ -6,6 +6,9 @@ on:
       ingress:
         type: string
         default: all
+      execution-environment:
+        type: string
+        default: gen2
       port:
         type: number
         default: 8080
@@ -78,6 +81,7 @@ jobs:
           --allow-unauthenticated \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
+          --execution-environment ${{ inputs.execution-environment }} \
           --port ${{ inputs.port }} \
           --cpu ${{ inputs.cpu }} \
           --memory ${{ inputs.memory }} \
