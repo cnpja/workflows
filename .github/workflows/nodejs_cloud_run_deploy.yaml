@@ -6,6 +6,9 @@ on:
       ingress:
         type: string
         default: all
+      execution-environment:
+        type: string
+        default: gen2
       cpu:
         type: number
         default: 0.1
@@ -58,6 +61,7 @@ jobs:
 
     with:
       ingress: ${{ inputs.ingress }}
+      execution-environment: ${{ inputs.execution-environment }}
       cpu: ${{ inputs.cpu }}
       memory: ${{ inputs.memory }}
       max-instances: ${{ inputs.max-instances }}
