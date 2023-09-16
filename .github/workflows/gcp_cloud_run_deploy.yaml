@@ -79,6 +79,7 @@ jobs:
           --project $GCP_PROJECT \
           --region us-east1 \
           --allow-unauthenticated \
+          --cpu-boost \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
           --execution-environment ${{ inputs.execution-environment }} \
