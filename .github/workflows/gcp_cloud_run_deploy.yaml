@@ -3,9 +3,6 @@ name: GCP Cloud Run Deploy
 on:
   workflow_call:
     inputs:
-      build-path:
-        type: string
-        default: '.'
       ingress:
         type: string
         default: all
@@ -56,8 +53,6 @@ jobs:
 
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v0
-      with:
-        install_components: beta
 
     - name: Configure Google Cloud CLI
       run: gcloud auth configure-docker
@@ -70,7 +65,7 @@ jobs:
 
     - name: Build Container Image
       run: |
-        docker build ${{ inputs.build-path }} -t $CLOUD_RUN_IMAGE \
+        docker build . -t $CLOUD_RUN_IMAGE \
           --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }} \
 
     - name: Publish Image to Container Registry

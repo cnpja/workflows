@@ -83,7 +83,6 @@ jobs:
     needs: prepare
 
     with:
-      build-path: './dist'
       ingress: ${{ inputs.ingress }}
       execution-environment: ${{ inputs.execution-environment }}
       cpu: ${{ inputs.cpu }}
