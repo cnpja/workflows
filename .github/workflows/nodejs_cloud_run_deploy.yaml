@@ -30,6 +30,9 @@ on:
       deploy-args:
         type: string
 
+env:
+  NPM_TOKEN: ${{ secrets.GLB_NPM_TOKEN }}
+
 jobs:
   prepare:
     name: Prepare Deploy
