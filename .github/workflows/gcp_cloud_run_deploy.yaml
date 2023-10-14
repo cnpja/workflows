@@ -3,6 +3,9 @@ name: GCP Cloud Run Deploy
 on:
   workflow_call:
     inputs:
+      region:
+        type: string
+        default: us-east1
       ingress:
         type: string
         default: all
@@ -75,7 +78,7 @@ jobs:
       run: |
         gcloud run deploy $GCP_PREFIX-${{ github.event.repository.name }} \
           --project $GCP_PROJECT \
-          --region us-east1 \
+          --region ${{ inputs.region }} \
           --allow-unauthenticated \
           --cpu-boost \
           --image $CLOUD_RUN_IMAGE \

@@ -3,6 +3,9 @@ name: Node.js Cloud Run Deploy
 on:
   workflow_call:
     inputs:
+      region:
+        type: string
+        default: us-east1
       ingress:
         type: string
         default: all
@@ -83,6 +86,7 @@ jobs:
     needs: prepare
 
     with:
+      region: ${{ inputs.region }}
       ingress: ${{ inputs.ingress }}
       execution-environment: ${{ inputs.execution-environment }}
       cpu: ${{ inputs.cpu }}
