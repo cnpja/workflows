@@ -3,6 +3,9 @@ name: Node.js Cloud Run Deploy
 on:
   workflow_call:
     inputs:
+      service:
+        type: string
+        default: ${{ github.event.repository.name }}
       region:
         type: string
         default: us-east1
@@ -86,6 +89,7 @@ jobs:
     needs: prepare
 
     with:
+      service: ${{ inputs.service }}
       region: ${{ inputs.region }}
       ingress: ${{ inputs.ingress }}
       execution-environment: ${{ inputs.execution-environment }}
