@@ -50,21 +50,21 @@ jobs:
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Authenticate Google Cloud Platform
-      uses: google-github-actions/auth@v0
+      uses: google-github-actions/auth@v2
       with:
         credentials_json: ${{ secrets[format('{0}_GCP_SERVICE_ACCOUNT_KEY', fromJSON('{"master":"PRD","stage":"STG"}')[github.ref_name])] }}
 
     - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0
+      uses: google-github-actions/setup-gcloud@v2
 
     - name: Configure Google Cloud CLI
       run: gcloud auth configure-docker
 
     - name: Download Build Artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       continue-on-error: true
       with:
         name: build-artifacts
