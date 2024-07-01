@@ -86,6 +86,7 @@ jobs:
           --cpu-boost \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
+          --vpc-connector default \
           --vpc-egress private-ranges-only \
           --execution-environment ${{ inputs.execution-environment }} \
           --port ${{ inputs.port }} \
