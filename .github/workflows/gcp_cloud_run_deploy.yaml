@@ -36,6 +36,9 @@ on:
       timeout:
         type: number
         default: 60
+      cloud-sql:
+        type: boolean
+        default: false
       deploy-args:
         type: string
 
@@ -72,23 +75,20 @@ jobs:
     - name: Build Container Image
       run: |
         docker build . -t $CLOUD_RUN_IMAGE \
-          --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }} \
+          --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
 
     - name: Publish Image to Container Registry
       run: docker push $CLOUD_RUN_IMAGE
 
     - name: Deploy Image on Cloud Run
       run: |
-        gcloud run deploy $GCP_PREFIX-${{ inputs.service }} \
+        DEPLOY_CMD="gcloud run deploy $GCP_PREFIX-${{ inputs.service }} \
           --project $GCP_PROJECT \
           --region ${{ inputs.region }} \
           --allow-unauthenticated \
           --cpu-boost \
           --image $CLOUD_RUN_IMAGE \
           --ingress ${{ inputs.ingress }} \
-          --network default \
-          --subnet default \
-          --vpc-egress private-ranges-only \
           --execution-environment ${{ inputs.execution-environment }} \
           --port ${{ inputs.port }} \
           --cpu ${{ inputs.cpu }} \
@@ -96,5 +96,15 @@ jobs:
           --max-instances ${{ inputs.max-instances }} \
           --min-instances ${{ inputs.min-instances }} \
           --concurrency ${{ inputs.concurrency }} \
-          --timeout ${{ inputs.timeout }} \
-          ${{ inputs.deploy-args }} \
+          --timeout ${{ inputs.timeout }}"
+
+        if [ "${{ inputs.cloud-sql }}" = "true" ]; then
+          DEPLOY_CMD="$DEPLOY_CMD \
+            --network default \
+            --subnet default \
+            --vpc-egress private-ranges-only \
+            --set-cloudsql-instances ${{ fromJSON('{"master":"prd-cnpja:us-east1:prd-mysql-ha","stage":"stg-cnpja:us-east1:stg-mysql"}')[github.ref_name] }}"
+        fi
+
+        DEPLOY_CMD="$DEPLOY_CMD ${{ inputs.deploy-args }}"
+        eval $DEPLOY_CMD
