@@ -33,6 +33,9 @@ on:
       timeout:
         type: number
         default: 60
+      cloud-sql:
+        type: boolean
+        default: false
       deploy-args:
         type: string
 
@@ -106,4 +109,5 @@ jobs:
       min-instances: ${{ inputs.min-instances }}
       concurrency: ${{ inputs.concurrency }}
       timeout: ${{ inputs.timeout }}
+      cloud-sql: ${{ inputs.cloud-sql }}
       deploy-args: ${{ inputs.deploy-args }}
