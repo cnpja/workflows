@@ -7,8 +7,8 @@ on:
         type: string
         default: ${{ github.event.repository.name }}
       regions:
-        type: array
-        default: ['us-east1']
+        type: string
+        default: 'us-east1'
       ingress:
         type: string
         default: all
@@ -82,7 +82,8 @@ jobs:
 
     - name: Deploy Image on Cloud Run
       run: |
-        for region in ${{ inputs.regions }}; do
+        IFS=',' read -ra REGIONS <<< "${{ inputs.regions }}"
+        for region in "${REGIONS[@]}"; do
           DEPLOY_CMD="gcloud run deploy $GCP_PREFIX-${{ inputs.service }} \
             --project $GCP_PROJECT \
             --region $region \
