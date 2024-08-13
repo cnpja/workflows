@@ -83,6 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     strategy:
+      max-parallel: 5
       matrix:
         region: ${{ fromJSON(inputs.regions) }}
 
