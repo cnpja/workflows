@@ -8,7 +8,7 @@ on:
         default: ${{ github.event.repository.name }}
       regions:
         type: string
-        default: 'us-east1'
+        default: '["us-east1"]'
       ingress:
         type: string
         default: all
