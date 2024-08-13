@@ -6,9 +6,9 @@ on:
       service:
         type: string
         default: ${{ github.event.repository.name }}
-      region:
-        type: string
-        default: us-east1
+      regions:
+        type: array
+        default: ['us-east1']
       ingress:
         type: string
         default: all
@@ -82,29 +82,31 @@ jobs:
 
     - name: Deploy Image on Cloud Run
       run: |
-        DEPLOY_CMD="gcloud run deploy $GCP_PREFIX-${{ inputs.service }} \
-          --project $GCP_PROJECT \
-          --region ${{ inputs.region }} \
-          --allow-unauthenticated \
-          --cpu-boost \
-          --image $CLOUD_RUN_IMAGE \
-          --ingress ${{ inputs.ingress }} \
-          --execution-environment ${{ inputs.execution-environment }} \
-          --port ${{ inputs.port }} \
-          --cpu ${{ inputs.cpu }} \
-          --memory ${{ inputs.memory }} \
-          --max-instances ${{ inputs.max-instances }} \
-          --min-instances ${{ inputs.min-instances }} \
-          --concurrency ${{ inputs.concurrency }} \
-          --timeout ${{ inputs.timeout }}"
+        for region in ${{ inputs.regions }}; do
+          DEPLOY_CMD="gcloud run deploy $GCP_PREFIX-${{ inputs.service }} \
+            --project $GCP_PROJECT \
+            --region $region \
+            --allow-unauthenticated \
+            --cpu-boost \
+            --image $CLOUD_RUN_IMAGE \
+            --ingress ${{ inputs.ingress }} \
+            --execution-environment ${{ inputs.execution-environment }} \
+            --port ${{ inputs.port }} \
+            --cpu ${{ inputs.cpu }} \
+            --memory ${{ inputs.memory }} \
+            --max-instances ${{ inputs.max-instances }} \
+            --min-instances ${{ inputs.min-instances }} \
+            --concurrency ${{ inputs.concurrency }} \
+            --timeout ${{ inputs.timeout }}"
 
-        if [ "${{ inputs.cloud-sql }}" = "true" ]; then
-          DEPLOY_CMD="$DEPLOY_CMD \
-            --network default \
-            --subnet default \
-            --vpc-egress private-ranges-only \
-            --set-cloudsql-instances ${{ fromJSON('{"master":"prd-cnpja:us-east1:prd-mysql-ha","stage":"stg-cnpja:us-east1:stg-mysql"}')[github.ref_name] }}"
-        fi
+          if [ "${{ inputs.cloud-sql }}" = "true" ]; then
+            DEPLOY_CMD="$DEPLOY_CMD \
+              --network default \
+              --subnet default \
+              --vpc-egress private-ranges-only \
+              --set-cloudsql-instances ${{ fromJSON('{"master":"prd-cnpja:us-east1:prd-mysql-ha","stage":"stg-cnpja:us-east1:stg-mysql"}')[github.ref_name] }}"
+          fi
 
-        DEPLOY_CMD="$DEPLOY_CMD ${{ inputs.deploy-args }}"
-        eval $DEPLOY_CMD
+          DEPLOY_CMD="$DEPLOY_CMD ${{ inputs.deploy-args }}"
+          eval $DEPLOY_CMD
+        done

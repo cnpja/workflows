@@ -6,9 +6,9 @@ on:
       service:
         type: string
         default: ${{ github.event.repository.name }}
-      region:
-        type: string
-        default: us-east1
+      regions:
+        type: array
+        default: ['us-east1']
       ingress:
         type: string
         default: all
@@ -100,7 +100,7 @@ jobs:
 
     with:
       service: ${{ inputs.service }}
-      region: ${{ inputs.region }}
+      regions: ${{ inputs.regions }}
       ingress: ${{ inputs.ingress }}
       execution-environment: ${{ inputs.execution-environment }}
       cpu: ${{ inputs.cpu }}
