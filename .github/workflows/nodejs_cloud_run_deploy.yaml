@@ -91,6 +91,7 @@ jobs:
       with:
         name: build-artifacts
         path: dist
+        include-hidden-files: true
 
   deploy:
     name: Cloud Run Deploy
