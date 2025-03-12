@@ -44,7 +44,13 @@ on:
 
 env:
   GCP_PREFIX: ${{ fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name] }}
-  CLOUD_RUN_IMAGE: ${{ format('gcr.io/{0}-cnpja/{1}-{2}:{3}', fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], github.event.repository.name, github.sha) }}
+
+  CLOUD_RUN_IMAGE: ${{ format('us-east1-docker.pkg.dev/{0}/cloud-run/{1}-{2}:{3}',
+        env.GCP_PROJECT,
+        fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name],
+        github.event.repository.name,
+        github.sha)
+  }}
 
 jobs:
   build:
@@ -63,8 +69,8 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
 
-    - name: Configure Google Cloud CLI
-      run: gcloud auth configure-docker
+    - name: Configure Docker for Artifact Registry
+      run: gcloud auth configure-docker us-east1-docker.pkg.dev
 
     - name: Download Build Artifacts
       uses: actions/download-artifact@v4
@@ -75,7 +81,7 @@ jobs:
     - name: Build Container Image
       run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
 
-    - name: Publish Image to Container Registry
+    - name: Publish Image to Artifact Registry
       run: docker push $CLOUD_RUN_IMAGE
 
   deploy:
@@ -95,8 +101,8 @@ jobs:
     - name: Set up Google Cloud SDK
       uses: google-github-actions/setup-gcloud@v2
 
-    - name: Configure Google Cloud CLI
-      run: gcloud auth configure-docker
+    - name: Configure Docker for Artifact Registry
+      run: gcloud auth configure-docker us-east1-docker.pkg.dev
 
     - name: Deploy Image on Cloud Run
       run: |
