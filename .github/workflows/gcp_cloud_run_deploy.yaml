@@ -44,6 +44,7 @@ on:
 
 env:
   GCP_PREFIX: ${{ fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name] }}
+  AR_REPOSITORY: ${{ format('us-east1-docker.pkg.dev/{0}-cnpja/{0}-{1}', fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], github.event.repository.name) }}
   CLOUD_RUN_IMAGE: ${{ format('us-east1-docker.pkg.dev/{0}-cnpja/{0}-{1}/{0}-{1}:{2}', fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], github.event.repository.name, github.sha) }}
 
 jobs:
@@ -74,6 +75,9 @@ jobs:
 
     - name: Build Container Image
       run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
+
+    - name: Create Artifact Registry Repository
+      run: gcloud artifacts repositories create $AR_REPOSITORY --repository-format=docker || true
 
     - name: Publish Image to Artifact Registry
       run: docker push $CLOUD_RUN_IMAGE
