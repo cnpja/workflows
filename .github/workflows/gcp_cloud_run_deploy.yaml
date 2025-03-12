@@ -44,13 +44,7 @@ on:
 
 env:
   GCP_PREFIX: ${{ fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name] }}
-
-  CLOUD_RUN_IMAGE: ${{ format('us-east1-docker.pkg.dev/{0}/cloud-run/{1}-{2}:{3}',
-        env.GCP_PROJECT,
-        fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name],
-        github.event.repository.name,
-        github.sha)
-  }}
+  CLOUD_RUN_IMAGE: ${{ format('us-east1-docker.pkg.dev/{0}/cloud-run/{1}-{2}:{3}', env.GCP_PROJECT, fromJSON('{"master":"prd","stage":"stg"}')[github.ref_name], github.event.repository.name, github.sha) }}
 
 jobs:
   build:
