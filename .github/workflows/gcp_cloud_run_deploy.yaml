@@ -77,7 +77,7 @@ jobs:
       run: docker build . -t $CLOUD_RUN_IMAGE --build-arg NPM_TOKEN=${{ secrets.GLB_NPM_TOKEN }}
 
     - name: Create Artifact Registry Repository
-      run: gcloud artifacts repositories create $AR_REPOSITORY --repository-format=docker || true
+      run: gcloud artifacts repositories create ${{ github.event.repository.name }} --location=us-east1 --repository-format=docker || true
 
     - name: Publish Image to Artifact Registry
       run: docker push $CLOUD_RUN_IMAGE
